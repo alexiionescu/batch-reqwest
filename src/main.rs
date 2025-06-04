@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser as _;
+use csv::ReaderBuilder;
 use itertools::Itertools;
 use log::{debug, error, info};
 use reqwest::{
@@ -19,7 +20,9 @@ async fn main() -> Result<()> {
     // CLI options are defined later in this file
     let cli = Cli::parse();
 
-    let mut csv_rdr = csv::Reader::from_path(cli.hosts_csv)?;
+    let mut csv_rdr = ReaderBuilder::new()
+        .delimiter(cli.delimiter)
+        .from_path(cli.hosts_csv)?;
     let csv_headers = csv_rdr.headers()?.clone();
     info!("CSV Columns {csv_headers:?}");
 
@@ -129,4 +132,7 @@ pub struct Cli {
 
     #[clap(long)]
     dry_run: bool,
+
+    #[clap(long, default_value_t = b',')]
+    delimiter: u8,
 }
