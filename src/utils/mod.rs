@@ -61,7 +61,7 @@ pub fn replace_vars_from_csv(
 ) -> String {
     let mut url = Cow::from(template);
     for (i, header) in headers.iter().enumerate() {
-        let var = format!("<%{}%>", header);
+        let var = format!("<%{header}%>");
         if let Some(value) = record.get(i) {
             url = url.maybe_replace(&var, value);
         }
